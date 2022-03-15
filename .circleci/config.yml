@@ -9,16 +9,28 @@ jobs:
     steps:
       - checkout    
       - run:
-          name: ️️Install and test
+          name: ️️Building Treelite...
           command: |
             uname -m
-            tests/ci_build/ci_build.sh cpu tests/ci_build/build_via_cmake.sh
+            tests/ci_build/ci_build.sh cpu tests/ci_build/build_via_cmake.sh      
+      - run:
+          name: ️️Packaging Python wheel for Treelite...
+          command: |
+            uname -m
             TAG=manylinux2014_aarch64
             tests/ci_build/ci_build.sh cpu bash -c "cd python/ && python setup.py bdist_wheel --universal"
             tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} python/dist/*.whl
             rm -v python/dist/*.whl
             mv -v wheelhouse/*.whl python/dist/
-            tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py python/dist/*.whl $(Build.SourceVersion) ${TAG}
+      - run:
+          name: ️️Packaging Python wheel for Treelite...
+          command: |
+            uname -m
+            TAG=manylinux2014_aarch64
+            tests/ci_build/ci_build.sh cpu bash -c "cd runtime/python/ && python setup.py bdist_wheel --universal"
+            tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} runtime/python/dist/*.whl
+            rm -v runtime/python/dist/*.whl
+            mv -v wheelhouse/*.whl runtime/python/dist/
 
 workflows:
   version: 2.1
