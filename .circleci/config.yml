@@ -21,6 +21,6 @@ jobs:
             tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py python/dist/*.whl $(Build.SourceVersion) ${TAG}
 
 workflows:
-  version: 2
+  version: 2.1
     jobs:
       - build-medium-arm64
