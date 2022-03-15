@@ -57,6 +57,6 @@ workflows:
   buid_and_deploy:
     jobs:
       - build-linux-aarch64
-      - pypi_publish
+      - pypi_publish:
           requires:
             - build-linux-aarch64
