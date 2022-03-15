@@ -36,13 +36,18 @@ jobs:
             mv -v wheelhouse/*.whl runtime/python/dist/
             tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py runtime/python/dist/*.whl $CIRCLE_SHA1 ${TAG}
       - store_artifacts:
-          path: runtime/python/dist/  
+          path: runtime/python/dist/
+
+  pypi_publish:
+    docker:
+      - image: circleci/python:3.6.4
+    steps:
+      - checkout  # checkout source code to working directory
       - run:
           name: Deploy...
           command: |
-            #sudo apt install python3.9-venv
-            #python -m venv env
-            #. env/bin/activate
+            python -m venv env
+            source env/bin/activate
             python -m pip install twine
             twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
             twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*     
@@ -52,11 +57,6 @@ workflows:
   buid_and_deploy:
     jobs:
       - build-linux-aarch64
-    #  - deploy:
-     #     requires:
-      #      - build-linux-aarch64
-       #   filters:
-        #    tags:
-         #     only: /[0-9]+(\.[0-9]+)*/
-          #  branches:
-           #   ignore: /.*/
+      - pypi_publish
+          requires:
+            - build-linux-aarch64
