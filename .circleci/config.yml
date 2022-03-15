@@ -44,8 +44,8 @@ jobs:
             python -m venv env
             . env/bin/activate
             python -m pip install twine
-            twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
-            twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*     
+            sudo twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
+            sudo twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*     
 
 workflows:
   version: 2.1
