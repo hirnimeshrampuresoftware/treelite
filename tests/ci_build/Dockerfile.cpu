@@ -1,5 +1,5 @@
-FROM centos@sha256:73f11afcbb50d8bc70eab9f0850b3fa30e61a419bc48cf426e63527d14a8373b 
-#arm64v8/centos:7
+FROM arm64v8/centos:7
+#centos@sha256:73f11afcbb50d8bc70eab9f0850b3fa30e61a419bc48cf426e63527d14a8373b
 
 LABEL maintainer "DMLC"
 
