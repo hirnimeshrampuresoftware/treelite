@@ -40,7 +40,7 @@ jobs:
 
   pypi_publish:
     docker:
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.9
     steps:
       - checkout  # checkout source code to working directory
       - run:
