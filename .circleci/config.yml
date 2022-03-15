@@ -76,11 +76,12 @@ workflows:
   version: 2.1
   test:
     jobs:
-      - build-linux-aarch64      
+      - build-linux-aarch64
       
   deploy:
     jobs:
       - deploy-Treelite
+          <<: *build-linux-aarch64
           filters:
             tags:
               only: /^[0-9]+(\.[0-9]+)*((\.dev|rc)([0-9]+)?)?$/
@@ -89,6 +90,7 @@ workflows:
           requires:
             - build-linux-aarch64
       - deploy-Treelite-runtime
+          <<: *build-linux-aarch64
           filters:
             tags:
               only: /^[0-9]+(\.[0-9]+)*((\.dev|rc)([0-9]+)?)?$/
