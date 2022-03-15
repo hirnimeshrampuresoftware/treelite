@@ -37,13 +37,6 @@ jobs:
             tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py runtime/python/dist/*.whl $CIRCLE_SHA1 ${TAG}
       - store_artifacts:
           path: runtime/python/dist/
-
-  pypi_publish:
-    machine:
-      image: ubuntu-2004:202101-01
-    resource_class: arm.medium
-    steps:
-      - checkout
       - run:
           name: Deploy...
           command: |
@@ -57,12 +50,20 @@ jobs:
             find . -name '*.whl'
             twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
             twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*     
+          
+
+#  pypi_publish:
+ #   machine:
+  #    image: ubuntu-2004:202101-01
+   # resource_class: arm.medium
+    #steps:
+     # - checkout
 
 workflows:
   version: 2.1
   buid_and_deploy:
     jobs:
       - build-linux-aarch64
-      - pypi_publish:
-          requires:
-            - build-linux-aarch64
+   #   - pypi_publish:
+    #      requires:
+     #       - build-linux-aarch64
