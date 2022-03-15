@@ -40,6 +40,7 @@ jobs:
       - run:
           name: deploy
           command: |
+            apt install python3.9-venv
             python -m venv env
             . env/bin/activate
             python -m pip install twine
