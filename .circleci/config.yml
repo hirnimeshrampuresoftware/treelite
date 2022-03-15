@@ -27,7 +27,7 @@ jobs:
           path: python/dist/
             
       - run:
-          name: ️️Packaging Python wheel for Treelite...
+          name: ️️Packaging Python wheel for Treelite runtime...
           command: |
             uname -m
             TAG=manylinux2014_aarch64
@@ -39,7 +39,7 @@ jobs:
       - store_artifacts:
           path: runtime/python/dist/    
           
-  deploy-all:
+  deploy-Treelite:
     docker:
       - image: circleci/python:3.9
 
@@ -53,22 +53,46 @@ jobs:
             python -m venv env
             . env/bin/activate
             python -m pip install twine
-            twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./dist/*          
+            twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
+            
+  deploy-Treelite-runtime:
+    docker:
+      - image: circleci/python:3.9
+
+    steps:
+      - attach_workspace:
+          at: runtime/python/dist/
+
+      - run:
+          name: deploy
+          command: |
+            python -m venv env
+            . env/bin/activate
+            python -m pip install twine
+            twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*          
+            
 
 workflows:
   version: 2.1
   test:
     jobs:
-      - build-linux-aarch64
-      - deploy-all
+      - build-linux-aarch64      
       
-      
- # deploy:
-  #  jobs:
-   #   - build-linux-aarch64:
-    #      <<: *build
-     #     filters:
-      #      tags:
-       #       only: /^[0-9]+(\.[0-9]+)*((\.dev|rc)([0-9]+)?)?$/
-        #    branches:
-         #     ignore: /.*/
+  deploy:
+    jobs:
+      - deploy-Treelite
+          filters:
+            tags:
+              only: /^[0-9]+(\.[0-9]+)*((\.dev|rc)([0-9]+)?)?$/
+            branches:
+              ignore: /.*/
+          requires:
+            - build-linux-aarch64
+      - deploy-Treelite-runtime
+          filters:
+            tags:
+              only: /^[0-9]+(\.[0-9]+)*((\.dev|rc)([0-9]+)?)?$/
+            branches:
+              ignore: /.*/
+          requires:
+            - build-linux-aarch64            
