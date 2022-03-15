@@ -48,7 +48,7 @@ jobs:
           command: |
             python -m venv env
             source env/bin/activate
-            python -m pip install twine
+            pip install --upgrade pip twine
             twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
             twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*     
 
