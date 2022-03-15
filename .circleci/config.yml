@@ -38,7 +38,7 @@ jobs:
       - store_artifacts:
           path: runtime/python/dist/  
       - run:
-          name: deploy
+          name: Deploy...
           command: |
             #sudo apt install python3.9-venv
             #python -m venv env
@@ -49,14 +49,14 @@ jobs:
 
 workflows:
   version: 2.1
-  test:
+  buid_and_deploy:
     jobs:
       - build-linux-aarch64
-      - deploy:
-          requires:
-            - build-linux-aarch64
-          filters:
-            tags:
-              only: /[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/      
+    #  - deploy:
+     #     requires:
+      #      - build-linux-aarch64
+       #   filters:
+        #    tags:
+         #     only: /[0-9]+(\.[0-9]+)*/
+          #  branches:
+           #   ignore: /.*/
