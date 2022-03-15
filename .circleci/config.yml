@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build-medium-arm64:
+  build-linux-aarch64:
     machine:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
@@ -22,6 +22,7 @@ jobs:
             tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} python/dist/*.whl
             rm -v python/dist/*.whl
             mv -v wheelhouse/*.whl python/dist/
+            tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py python/dist/*.whl $(CIRCLE_SHA1) ${TAG}
       - run:
           name: ️️Packaging Python wheel for Treelite...
           command: |
@@ -31,9 +32,21 @@ jobs:
             tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} runtime/python/dist/*.whl
             rm -v runtime/python/dist/*.whl
             mv -v wheelhouse/*.whl runtime/python/dist/
+            tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py runtime/python/dist/*.whl $(CIRCLE_SHA1) ${TAG}
 
 workflows:
   version: 2.1
   test:
     jobs:
-      - build-medium-arm64
+      - build-linux-aarch64
+      
+      
+  deploy:
+    jobs:
+      - build-linux-aarch64:
+          <<: *build
+          filters:
+            tags:
+              only: /^[0-9]+(\.[0-9]+)*((\.dev|rc)([0-9]+)?)?$/
+            branches:
+              ignore: /.*/
