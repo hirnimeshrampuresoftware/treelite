@@ -40,15 +40,23 @@ jobs:
       - run:
           name: deploy
           command: |
-            sudo apt install python3.9-venv
-            python -m venv env
-            . env/bin/activate
+            #sudo apt install python3.9-venv
+            #python -m venv env
+            #. env/bin/activate
             python -m pip install twine
             sudo twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./python/dist/*
             sudo twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" --skip-existing ./runtime/python/dist/*     
 
 workflows:
   version: 2.1
-  test:
+  build_and_deploy:
     jobs:
       - build-linux-aarch64
+      - deploy:
+          requires:
+            - build-linux-aarch64
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/      
