@@ -13,9 +13,9 @@ jobs:
           command: |
             uname -m
             tests/ci_build/ci_build.sh cpu tests/ci_build/build_via_cmake.sh
-            TAG=manylinux2014_x86_64
+            TAG=manylinux2014_aarch64
             tests/ci_build/ci_build.sh cpu bash -c "cd python/ && python setup.py bdist_wheel --universal"
-            tests/ci_build/ci_build.sh auditwheel_x86_64 auditwheel repair --only-plat --plat ${TAG} python/dist/*.whl
+            tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} python/dist/*.whl
             rm -v python/dist/*.whl
             mv -v wheelhouse/*.whl python/dist/
             tests/ci_build/ci_build.sh cpu python tests/ci_build/rename_whl.py python/dist/*.whl $(Build.SourceVersion) ${TAG}
