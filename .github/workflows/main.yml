@@ -1,0 +1,28 @@
+
+name: CI
+on:
+  push:
+    branches: [ mainline ]
+  pull_request:
+    branches: [ mainline ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1      
+
+      - name: Building Treelite...
+        run: tests/ci_build/ci_build.sh cpu tests/ci_build/build_via_cmake.sh
+
+      - name: Packaging Python wheel for Treelite...
+        run: |
+          export TAG=manylinux2014_aarch64
+          tests/ci_build/ci_build.sh cpu bash -c "cd python/ && python setup.py bdist_wheel --universal"
+          tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} python/dist/*.whl
+          rm -v python/dist/*.whl
+          mv -v wheelhouse/*.whl python/dist/
