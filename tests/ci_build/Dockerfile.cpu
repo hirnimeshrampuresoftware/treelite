@@ -8,11 +8,22 @@ RUN \
     yum -y update && \
     yum install -y tar unzip wget xz git yum-utils which ninja-build devtoolset-8-gcc devtoolset-8-binutils devtoolset-8-gcc-c++ && \
     # Python
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/python && \
+    if [ `uname -m` == "aarch64" ]; then
+       wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+       bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/python
+    else
+       wget https://github.com/conda-forge/miniforge/releases/download/4.8.2-1/Miniforge3-4.8.2-1-Linux-aarch64.sh -O Miniconda3-latest-Linux-aarch64.sh
+       bash Miniconda3-latest-Linux-aarch64.sh -b -p /opt/python 
+    fi && \
     # CMake
-    wget -nv -nc https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.sh --no-check-certificate && \
-    bash cmake-3.16.0-Linux-x86_64.sh --skip-license --prefix=/usr
+    if [ `uname -m` == "aarch64" ]; then
+       wget -nv -nc https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.sh --no-check-certificate
+       bash cmake-3.16.0-Linux-x86_64.sh --skip-license --prefix=/usr 
+    else
+       wget -nv -nc https://cmake.org/files/v3.19/cmake-3.19.3-Linux-aarch64.sh --no-check-certificate
+       bash cmake-3.19.3-Linux-aarch64.sh --skip-license --prefix=/usr 
+    fi && \
+    
 
 ENV PATH=/opt/python/bin:$PATH
 ENV CC=/opt/rh/devtoolset-8/root/usr/bin/gcc
@@ -27,7 +38,11 @@ ENV GOSU_VERSION 1.10
 
 # Install lightweight sudo (not bound to TTY)
 RUN set -ex; \
-    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64" && \
+    if [ `uname -m` == "aarch64" ]; then
+        wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-arm64"
+    else
+        wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64"
+    fi && \
     chmod +x /usr/local/bin/gosu && \
     gosu nobody true
 
