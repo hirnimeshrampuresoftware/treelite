@@ -6,5 +6,9 @@ rm -rf build
 mkdir build
 cd build
 cmake .. -GNinja "$@"
-ninja-build -v
+if [ `uname -m` == "aarch64" ]; then
+   ninja-build -v
+else
+   ninja -v
+fi
 cd ..
