@@ -1,6 +1,4 @@
-FROM arm64v8/centos:7
-#centos@sha256:73f11afcbb50d8bc70eab9f0850b3fa30e61a419bc48cf426e63527d14a8373b
-
+FROM centos:7
 LABEL maintainer "DMLC"
 
 # Install all basic requirements
@@ -10,12 +8,12 @@ RUN \
     yum -y update && \
     yum install -y tar unzip wget xz git yum-utils which ninja-build devtoolset-8-gcc devtoolset-8-binutils devtoolset-8-gcc-c++ && \
     # Python
-    wget https://github.com/conda-forge/miniforge/releases/download/4.8.2-1/Miniforge3-4.8.2-1-Linux-aarch64.sh -O Miniconda3-latest-Linux-aarch64.sh && \
-    bash Miniconda3-latest-Linux-aarch64.sh -b -p /opt/python && \
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/python && \
     # CMake
-    wget -nv -nc https://cmake.org/files/v3.19/cmake-3.19.3-Linux-aarch64.sh --no-check-certificate && \
-    bash cmake-3.19.3-Linux-aarch64.sh --skip-license --prefix=/usr
-    
+    wget -nv -nc https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.sh --no-check-certificate && \
+    bash cmake-3.16.0-Linux-x86_64.sh --skip-license --prefix=/usr
+
 ENV PATH=/opt/python/bin:$PATH
 ENV CC=/opt/rh/devtoolset-8/root/usr/bin/gcc
 ENV CXX=/opt/rh/devtoolset-8/root/usr/bin/c++
@@ -29,7 +27,7 @@ ENV GOSU_VERSION 1.10
 
 # Install lightweight sudo (not bound to TTY)
 RUN set -ex; \
-    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-arm64" && \
+    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64" && \
     chmod +x /usr/local/bin/gosu && \
     gosu nobody true
 
