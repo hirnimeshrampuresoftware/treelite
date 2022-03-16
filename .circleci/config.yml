@@ -11,12 +11,10 @@ jobs:
       - run:
           name: ️️Building Treelite...
           command: |
-            uname -m
             tests/ci_build/ci_build.sh cpu.aarch64 tests/ci_build/build_via_cmake.sh      
       - run:
           name: ️️Packaging Python wheel for Treelite...
           command: |
-            uname -m
             TAG=manylinux2014_aarch64
             tests/ci_build/ci_build.sh cpu.aarch64 bash -c "cd python/ && python setup.py bdist_wheel --universal"
             tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} python/dist/*.whl
@@ -28,7 +26,6 @@ jobs:
       - run:
           name: ️️Packaging Python wheel for Treelite runtime...
           command: |
-            uname -m
             TAG=manylinux2014_aarch64
             tests/ci_build/ci_build.sh cpu.aarch64 bash -c "cd runtime/python/ && python setup.py bdist_wheel --universal"
             tests/ci_build/ci_build.sh auditwheel_aarch64 auditwheel repair --only-plat --plat ${TAG} runtime/python/dist/*.whl
